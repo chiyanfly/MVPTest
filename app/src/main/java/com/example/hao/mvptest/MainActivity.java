@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements MyContract.Ilogic
 
     }
 
+
     @Override
     public MyContract.IlogicPresenter createMainPresenter() {
         return new Mypresenter();
