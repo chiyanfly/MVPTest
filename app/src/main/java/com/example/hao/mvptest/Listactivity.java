@@ -3,6 +3,7 @@ package com.example.hao.mvptest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -63,11 +64,11 @@ public class Listactivity extends Activity implements ListContract.IView {
     private void showModifyDialog(int adapterPosition) {
     }
 
-
     private void showaddDialog() {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText edittext = new EditText(getApplicationContext());
+        edittext.setTextColor(Color.BLACK);
         alert.setMessage("Enter Your text");
         alert.setTitle("Add text");
 
