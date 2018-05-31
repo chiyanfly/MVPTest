@@ -33,15 +33,16 @@ public class Listactivity extends Activity implements ListContract.IView {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_test);
+
         recyclerView_list = (RecyclerViewExtended) findViewById(R.id.list_ref_points);
         Button_add = (Button) findViewById(R.id.button_add);
-
         Button_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showaddDialog();
             }
         });
+
 
         mylistadpter = new Listviewadapter();
         recyclerView_list.setAdapter(mylistadpter);
@@ -61,7 +62,34 @@ public class Listactivity extends Activity implements ListContract.IView {
         mypresenter.onrefreshlist();
     }
 
-    private void showModifyDialog(int adapterPosition) {
+    private void showModifyDialog(final int adapterPosition) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final EditText edittext = new EditText(getApplicationContext());
+        edittext.setTextColor(Color.BLACK);
+        edittext.setText(mylistadpter.textlist.get(adapterPosition));
+        alert.setMessage("change Your text");
+        alert.setTitle("change text");
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+
+                String newaddtext = edittext.getText().toString();
+                mypresenter.onModifytext(adapterPosition,newaddtext);
+            }
+        });
+
+        alert.setNegativeButton("No Option", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
+
     }
 
     private void showaddDialog() {
@@ -96,7 +124,24 @@ public class Listactivity extends Activity implements ListContract.IView {
     }
 
 
-    private void showDeleteDialog(int adapterPosition) {
+    private void showDeleteDialog(final int adapterPosition) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Listactivity.this);
+        builder.setMessage("Do want to delete this text?")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                            mypresenter.onRemovetext(adapterPosition);
+                    }
+                })
+                .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        // Create the AlertDialog object and return it
+         builder.create().show();
+
+
     }
 
 
@@ -113,12 +158,12 @@ public class Listactivity extends Activity implements ListContract.IView {
 
     @Override
     public void notifytextModified(int position) {
-
+        mylistadpter.notifyItemChanged(position);
     }
 
     @Override
     public void notifytextRemoved(int position) {
-
+        mylistadpter.notifyItemRemoved(position);
     }
 
     @Override
@@ -146,9 +191,7 @@ public class Listactivity extends Activity implements ListContract.IView {
                 }
             });
 
-
         }
-
         private void showOptiondialog() {
             // show dialog for modifying and deleting
             String[] options = new String[]{"modifier", "supprimer"};
@@ -190,7 +233,6 @@ public class Listactivity extends Activity implements ListContract.IView {
             View v = LayoutInflater.from(Listactivity.this).inflate(R.layout.list_item, parent, false);
             TextView textView = (TextView) v.findViewById(R.id.text_item);
             return new ListviewHolder(v, textView);
-
         }
 
         @Override
